@@ -1,0 +1,27 @@
+---
+- name: Тестирование пользовательского модуля disk_info
+  hosts: localhost # Или ваши целевые хосты
+  gather_facts: no # Можно оставить yes, если нужны факты
+
+  tasks:
+    - name: Получить информацию о корневом разделе /
+      disk_info: # <-- Имя вашего модуля
+        mountpoint: /
+        total_size: yes # Необязательный параметр, по умолчанию true
+      register: root_disk_info
+
+    - name: Показать результат
+      debug:
+        var: root_disk_info
+
+    - name: Получить информацию о /var без общего размера
+      disk_info:
+        mountpoint: /var # Убедитесь, что эта точка монтирования существует
+        total_size: no
+      register: var_disk_info
+      ignore_errors: yes # Игнорировать ошибку, если /var не отдельный раздел
+
+    - name: Показать результат для /var
+      debug:
+        var: var_disk_info
+      when: var_disk_info is defined and not var_disk_info.failed
