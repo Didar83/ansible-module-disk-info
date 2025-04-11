@@ -1,0 +1,15 @@
+---
+- name: Get Mount Point Information
+  hosts: localhost
+  connection: local
+
+  tasks:
+    - name: Gather Mount Point Information
+      mount_point_info:
+        mountpoint: "/dev"
+        total_size: true
+      register: result
+
+    - name: Display Mount Point Information
+      debug:
+        var: result
